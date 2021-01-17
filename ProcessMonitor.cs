@@ -18,12 +18,11 @@ namespace tarkov_settings
         WinEventDelegate dele = null;
 
         private string currentProcessTitle;
-        private string targetProcess;
+        private readonly string targetProcess;
 
-        private int initialDVCLevel;
-        private DisplayHandle primaryDisplay;
+        private readonly MainForm pForm;
 
-        private MainForm pForm;
+        private ColorController cController;
         public string Current
         {
             get { return currentProcessTitle; }
@@ -36,8 +35,7 @@ namespace tarkov_settings
             dele = new WinEventDelegate(WinEventProc);
             IntPtr m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, dele, 0, 0, WINEVENT_OUTOFCONTEXT | 2);
 
-            primaryDisplay = DisplayApi.EnumNvidiaDisplayHandle()[0];
-            initialDVCLevel = DisplayApi.GetDVCInfo(primaryDisplay).CurrentLevel;
+            cController = ColorController.Instance;
         }
 
         [DllImport("user32.dll")]
@@ -67,23 +65,24 @@ namespace tarkov_settings
         }
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            if (GetActiveWindowTitle() == this.targetProcess)
+            string windowTitle;
+            if ((windowTitle = GetActiveWindowTitle()) == this.targetProcess)
             {
                 Console.WriteLine("EFT is focused");
                 pForm.IsTarkovActive = true;
-                pForm.debugText = "Enabled";
+                pForm.debugText = windowTitle;
 
-
-                DisplayApi.SetDVCLevel(primaryDisplay, 55);
+                cController.DVCLevel = 63;
+                cController.Gamma = 255;
             }
             else
             {
                 Console.WriteLine("EFT is not focused");
                 pForm.IsTarkovActive = false;
-                pForm.debugText = "Disabled";
+                pForm.debugText = windowTitle;
 
-
-                DisplayApi.SetDVCLevel(primaryDisplay, initialDVCLevel);
+                cController.DVCLevel = 0;
+                cController.Gamma = 128;
             }
         }
     }

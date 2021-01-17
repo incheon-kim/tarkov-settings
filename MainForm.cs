@@ -72,5 +72,10 @@ namespace tarkov_settings
             TarkovSettingsPanel tarkovSettingsPanel = new TarkovSettingsPanel();
             layoutTablePanel.Controls.Add(tarkovSettingsPanel, 1, 0);
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+        }
     }
 }
