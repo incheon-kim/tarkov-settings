@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
@@ -14,152 +13,104 @@ using NvAPIWrapper.Native.Display.Structures;
 
 namespace tarkov_settings
 {
+    class GammaController
+    {
+
+        /*
+         * Code from
+         * https://github.com/falahati/NvAPIWrapper/issues/20#issuecomment-634551206
+         */
+        private ushort[] CalculateLUT(double brightness = 0.5, double contrast = 0.5, double gamma = 2.8)
+        {
+            const int dataPoints = 256;
+
+            // Limit gamma in range [0.4-2.8]
+            gamma = Math.Min(Math.Max(gamma, 0.4), 2.8);
+            // Normalize contrast in range [-1,1]
+            contrast = (Math.Min(Math.Max(contrast, 0), 1) - 0.5) * 2;
+            // Normalize brightness in range [-1,1]
+            brightness = (Math.Min(Math.Max(brightness, 0), 1) - 0.5) * 2;
+            // Calculate curve offset resulted from contrast
+            var offset = contrast > 0 ? contrast * -25.4 : contrast * -32;
+            // Calculate the total range of curve
+            var range = (dataPoints - 1) + offset * 2;
+            // Add brightness to the curve offset
+            offset += brightness * (range / 5);
+            // Fill the gamma curve
+            var result = new ushort[dataPoints];
+            for (var i = 0; i < result.Length; i++)
+            {
+                var factor = (i + offset) / range;
+                factor = Math.Pow(factor, 1 / gamma);
+                factor = Math.Min(Math.Max(factor, 0), 1);
+                result[i] = (ushort)Math.Round(factor * ushort.MaxValue);
+            }
+            return result;
+        }
+    }
+
+    class Display
+    {
+        public readonly static DisplayHandle NvDisplay;
+        public readonly static string WinDisplay;
+
+        [DllImport("gdi32")]
+        public static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
+
+        [DllImport("gdi32")]
+        public static extern bool DeleteDC([In] IntPtr hdc);
+
+        static Display()
+        {
+            NvDisplay = DisplayApi.EnumNvidiaDisplayHandle()[0];
+            WinDisplay = GetWinDisplayName();
+        }
+        private static string GetWinDisplayName()
+        {
+            Screen display = null;
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                if (screen.Primary)
+                {
+                    Console.WriteLine(screen.DeviceName);
+                    display = screen;
+                }
+            }
+
+            return display?.DeviceName ?? null;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct RAMP
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public UInt16[] Red;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public UInt16[] Green;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public UInt16[] Blue;
+    }
+
     class ColorController
     {
-        private int initialDVCLevel;
-        private int currentDVCLevel;
-
+        private readonly int initialDVL;
+        private int currentDVL;
         private PrivateDisplayDVCInfo DVCInfo;
-        private DisplayHandle primaryDisplay;
-        private DisplayHandle[] displays;
 
-        // for gamma control
+        // Gamma Ramps
         private RAMP currentRamps;
         private RAMP originalRamps;
-        private int _gamma;
-        private Thread gThread;
 
+        /**
+         * _canceller : Token Source to abort Async-Task (Gamma Value Change)
+         * WHY : *I don't know why* set gamma ramp keeps revert soon after modified
+         */
+        private CancellationTokenSource _canceller;
+
+        #region Singleton Pattern implement
         private static readonly Lazy<ColorController> instance =
             new Lazy<ColorController>(() => new ColorController());
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct DISPLAY_DEVICE
-        {
-            [MarshalAs(UnmanagedType.U4)]
-            public int cb;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            public string DeviceName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceString;
-            [MarshalAs(UnmanagedType.U4)]
-            public DisplayDeviceStateFlags StateFlags;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceID;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-            public string DeviceKey;
-        }
-
-        [Flags()]
-        public enum DisplayDeviceStateFlags : int
-        {
-            /// <summary>The device is part of the desktop.</summary>
-            AttachedToDesktop = 0x1,
-            MultiDriver = 0x2,
-            /// <summary>The device is part of the desktop.</summary>
-            PrimaryDevice = 0x4,
-            /// <summary>Represents a pseudo device used to mirror application drawing for remoting or other purposes.</summary>
-            MirroringDriver = 0x8,
-            /// <summary>The device is VGA compatible.</summary>
-            VGACompatible = 0x10,
-            /// <summary>The device is removable; it cannot be the primary display.</summary>
-            Removable = 0x20,
-            /// <summary>The device has more display modes than its output devices support.</summary>
-            ModesPruned = 0x8000000,
-            Remote = 0x4000000,
-            Disconnect = 0x2000000
-        }
-
-
-        [DllImport("gdi32")]
-        private static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
-
-        [DllImport("gdi32")]
-        private static extern bool DeleteDC([In] IntPtr hdc);
-
-        [DllImport("gdi32")]
-        private static extern bool GetDeviceGammaRamp(IntPtr hDc, ref RAMP lpRamp);
-
-        [DllImport("gdi32")]
-        private static extern bool SetDeviceGammaRamp(IntPtr hDc, ref RAMP lpRamp);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct RAMP
-        {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-            public UInt16[] Red;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-            public UInt16[] Green;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-            public UInt16[] Blue;
-        }
-
-        public int DVCLevel
-        {
-            get => this.currentDVCLevel;
-            set
-            {
-                if (value <= DVCInfo.MaximumLevel && value >= DVCInfo.MinimumLevel)
-                {
-                    this.currentDVCLevel = value;
-                    DisplayApi.SetDVCLevel(primaryDisplay, this.currentDVCLevel);
-                }
-            }
-        }
-
-        public int Gamma
-        {
-            get => this._gamma;
-            set
-            {
-                if (gThread != null && gThread.IsAlive)
-                {
-                    Console.WriteLine("Thread Aborting");
-                    gThread.Abort();
-                }
-
-                if (value > 256)
-                    this._gamma = 256;
-                else if (value < 1)
-                    this._gamma = 1;
-                else
-                    this._gamma = value;
-
-                currentRamps.Red = new ushort[256];
-                currentRamps.Green = new ushort[256];
-                currentRamps.Blue = new ushort[256];
-
-                Screen display = Screen.AllScreens[0];
-                var hdc = IntPtr.Zero;
-
-                try
-                {
-                    hdc = CreateDC(null, display.DeviceName, null, IntPtr.Zero);
-
-
-                    for (int i = 1; i < 256; i++)
-                    {
-                        int iArrayValue = i * (this._gamma + 128);
-
-                        if (iArrayValue > 65535)
-                            iArrayValue = 65535;
-
-                        currentRamps.Red[i] = (ushort)iArrayValue;
-                        currentRamps.Blue[i] = currentRamps.Green[i] = (ushort)iArrayValue;
-                    }
-                    gThread = new Thread(() => this.changeGamma(hdc));
-                    gThread.Start();
-                    Console.WriteLine(SetDeviceGammaRamp(hdc, ref currentRamps));
-
-                }
-                finally
-                {
-                    
-                }
-            }
-        }
 
         public static ColorController Instance
         {
@@ -168,37 +119,41 @@ namespace tarkov_settings
                 return instance.Value;
             }
         }
+        #endregion
+
+        #region Win32 API Calls
+        [DllImport("gdi32")]
+        private static extern bool GetDeviceGammaRamp(IntPtr hDc, ref RAMP lpRamp);
+
+        [DllImport("gdi32")]
+        private static extern bool SetDeviceGammaRamp(IntPtr hDc, ref RAMP lpRamp);
+        #endregion
+
+        public int DVL
+        {
+            get => this.currentDVL;
+            set
+            {
+                if (value <= DVCInfo.MaximumLevel && value >= DVCInfo.MinimumLevel)
+                {
+                    this.currentDVL = value;
+                    DisplayApi.SetDVCLevel(Display.NvDisplay, this.currentDVL);
+                    Console.WriteLine("[DVC] Applied");
+                }
+            }
+        }
 
         private ColorController()
         {
-            this.displays = DisplayApi.EnumNvidiaDisplayHandle();
+            DVCInfo = DisplayApi.GetDVCInfo(Display.NvDisplay);
+            initialDVL = DVCInfo.CurrentLevel;
+            DVL = DVCInfo.CurrentLevel;
 
-            this.primaryDisplay = displays[0];
-
-            this.DVCInfo = DisplayApi.GetDVCInfo(primaryDisplay);
-
-            this.initialDVCLevel = DVCInfo.CurrentLevel;
-            this.DVCLevel = DVCInfo.CurrentLevel;
-
-            // Gamma
-            Screen display = null;
-            foreach(Screen screen in Screen.AllScreens)
-            {
-                if (screen.Primary) {
-                    Console.WriteLine(screen.DeviceName);
-                    display = screen;
-                }
-            }
-
-            if (display is null)
-                System.Windows.Forms.Application.Exit();
-                
-
-
+            // Backup Gamma Ramp
             var hdc = IntPtr.Zero;
             try
             {
-                hdc = CreateDC(null, display.DeviceName, null, IntPtr.Zero);
+                hdc = Display.CreateDC(null, Display.WinDisplay, null, IntPtr.Zero);
                 currentRamps = new RAMP();
                 originalRamps = new RAMP();
                 GetDeviceGammaRamp(hdc, ref originalRamps);
@@ -206,49 +161,112 @@ namespace tarkov_settings
             finally
             {
                 if (!IntPtr.Zero.Equals(hdc))
-                    DeleteDC(hdc);
+                    Display.DeleteDC(hdc);
             }
-            
-            Console.WriteLine("Initial DVC" + this.initialDVCLevel);
-            Console.WriteLine("Current DVCLEvel" + this.DVCLevel);
         }
 
-        public void ResetDVCLevel()
+        public async void ChangeColorRamp(double brightness = 0.5, double contrast = 0.5, double gamma = 1.0)
         {
-            this.DVCLevel = initialDVCLevel;
-        }
-
-        private void changeGamma(IntPtr hdc)
-        {
+            var hdc = IntPtr.Zero;
             try
             {
-                while (true)
+                hdc = Display.CreateDC(null, Display.WinDisplay, null, IntPtr.Zero);
+
+                ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
+                currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
+
+                if (_canceller != null)
                 {
-                    Console.Write(".");
-                    SetDeviceGammaRamp(hdc, ref currentRamps);
-                    Thread.Sleep(250);
+                    _canceller.Cancel();
+                    _canceller.Dispose();
                 }
-            } catch (Exception e)
-            {
-                if (!IntPtr.Zero.Equals(hdc))
-                    DeleteDC(hdc);
-                Console.WriteLine("Gamma Change Thread Stopped ");
+
+                _canceller = new CancellationTokenSource();
+                var token = _canceller.Token;
+
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        do
+                        {
+                            SetDeviceGammaRamp(hdc, ref this.currentRamps);
+                            Thread.Sleep(250);
+                            if (token.IsCancellationRequested)
+                                break;
+                        } while (true);
+                    }
+                    catch (System.ObjectDisposedException e) { }
+                });
+
+                
             }
+            finally {
+                Console.WriteLine("[COLOR] Applied.");
+                if (!IntPtr.Zero.Equals(hdc))
+                    Display.DeleteDC(hdc);
+            }
+        }
+
+        public void ResetDVL()
+        {
+            Console.WriteLine("[DVL] Reset to : {0}", this.initialDVL);
+            DisplayApi.SetDVCLevel(Display.NvDisplay, DVCInfo.MinimumLevel);
         }
 
         public void ResetGamma()
         {
-            Screen display = Screen.AllScreens[0];
             var hdc = IntPtr.Zero;
             try
             {
-                hdc = CreateDC(null, display.DeviceName, null, IntPtr.Zero);
+                hdc = Display.CreateDC(null, Display.WinDisplay, null, IntPtr.Zero);
                 SetDeviceGammaRamp(hdc, ref originalRamps);
             }
             finally
             {
                 if (!IntPtr.Zero.Equals(hdc))
-                    DeleteDC(hdc);
+                    Display.DeleteDC(hdc);
+            }
+        }
+
+        /*
+         * Code from
+         * https://github.com/falahati/NvAPIWrapper/issues/20#issuecomment-634551206
+         */
+        private static ushort[] CalculateLUT(double brightness = 0.5, double contrast = 0.5, double gamma = 2.8)
+        {
+            const int dataPoints = 256;
+
+            // Limit gamma in range [0.4-2.8]
+            gamma = Math.Min(Math.Max(gamma, 0.4), 2.8);
+            // Normalize contrast in range [-1,1]
+            contrast = (Math.Min(Math.Max(contrast, 0), 1) - 0.5) * 2;
+            // Normalize brightness in range [-1,1]
+            brightness = (Math.Min(Math.Max(brightness, 0), 1) - 0.5) * 2;
+            // Calculate curve offset resulted from contrast
+            var offset = contrast > 0 ? contrast * -25.4 : contrast * -32;
+            // Calculate the total range of curve
+            var range = (dataPoints - 1) + offset * 2;
+            // Add brightness to the curve offset
+            offset += brightness * (range / 5);
+            // Fill the gamma curve
+            var result = new ushort[dataPoints];
+            for (var i = 0; i < result.Length; i++)
+            {
+                var factor = (i + offset) / range;
+                factor = Math.Pow(factor, 1 / gamma);
+                factor = Math.Min(Math.Max(factor, 0), 1);
+                result[i] = (ushort)Math.Round(factor * ushort.MaxValue);
+            }
+            return result;
+        }
+
+        public void KillTask()
+        {
+            if (_canceller != null)
+            {
+                _canceller.Cancel();
+                _canceller.Dispose();
             }
         }
     }

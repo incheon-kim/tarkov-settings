@@ -10,6 +10,7 @@ namespace tarkov_settings
 {
     public class TarkovSettingsPanel : Panel
     {
+
         public TarkovSettingsPanel()
         {
             this.Dock = DockStyle.Fill;
@@ -25,6 +26,13 @@ namespace tarkov_settings
             set { if (value <= 105)
                     Fov = value; 
             }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.ResumeLayout(false);
+
         }
     }
 }

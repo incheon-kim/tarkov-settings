@@ -1,45 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-
-using NvAPIWrapper.Native;
-using NvAPIWrapper.Native.Display.Structures;
-using NvAPIWrapper.Display;
+using System.Diagnostics;
 
 namespace tarkov_settings
 {
-    class ProcessMonitor
+    static class NativeMethods
     {
-        delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+        public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        WinEventDelegate dele = null;
+        public static WinEventDelegate dele = null;
 
-        private string currentProcessTitle;
-        private readonly string targetProcess;
-
-        private readonly MainForm pForm;
-
-        private ColorController cController;
-        public string Current
-        {
-            get { return currentProcessTitle; }
-            set { currentProcessTitle = value; }
-        }
-        public ProcessMonitor(MainForm pForm, string target)
-        {
-            this.pForm = pForm;
-            this.targetProcess = target;
-            dele = new WinEventDelegate(WinEventProc);
-            IntPtr m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, IntPtr.Zero, dele, 0, 0, WINEVENT_OUTOFCONTEXT | 2);
-
-            cController = ColorController.Instance;
-        }
-
+        #region Win32 API Calls
         [DllImport("user32.dll")]
-        static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+        public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
         private const uint WINEVENT_OUTOFCONTEXT = 0;
         private const uint EVENT_SYSTEM_FOREGROUND = 3;
@@ -47,43 +23,105 @@ namespace tarkov_settings
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll")]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-
-        private string GetActiveWindowTitle()
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        #endregion
+        public static string GetActiveWindowTitle()
         {
-            const int nChars = 256;
-            IntPtr handle = IntPtr.Zero;
-            StringBuilder Buff = new StringBuilder(nChars);
-            handle = GetForegroundWindow();
-
-            if (GetWindowText(handle, Buff, nChars) > 0)
+            try
             {
-                return Buff.ToString();
+                IntPtr handle = GetForegroundWindow();
+                uint threadID = GetWindowThreadProcessId(handle, out uint processID);
+                return Process.GetProcessById(Convert.ToInt32(processID)).ProcessName;
             }
-            return null;
+            catch
+            {
+                return null;
+            }
         }
+    }
+    class ProcessMonitor
+    {
+        private const uint WINEVENT_OUTOFCONTEXT = 0;
+        private const uint EVENT_SYSTEM_FOREGROUND = 3;
+
+        private readonly ColorController cController = ColorController.Instance;
+
+        private HashSet<string> pTargets = new HashSet<string>();
+
+        #region Singleton Pattern implement
+        private static readonly Lazy<ProcessMonitor> instance =
+            new Lazy<ProcessMonitor>(() => new ProcessMonitor());
+
+        public static ProcessMonitor Instance
+        {
+            get
+            {
+                return instance.Value;
+            }
+        }
+        #endregion
+
+        public MainForm Parent{ get;set; }
+
+        public ProcessMonitor()
+        {
+            NativeMethods.dele = new NativeMethods.WinEventDelegate(WinEventProc);
+            IntPtr m_hhook = NativeMethods.SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
+                EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero,
+                NativeMethods.dele,
+                0, 0, WINEVENT_OUTOFCONTEXT | 2);
+        }
+
+        public void Add(string process)
+        {
+            this.pTargets.Add(process);
+        }
+
+        /**
+         * Window Focus changed Event Handler
+         */
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            string windowTitle;
-            if ((windowTitle = GetActiveWindowTitle()) == this.targetProcess)
-            {
-                Console.WriteLine("EFT is focused");
-                pForm.IsTarkovActive = true;
-                pForm.debugText = windowTitle;
+            //cController.AbortThread();
+            Console.WriteLine("Running Tasks : " + GetWorkingThreads());
+            Console.WriteLine("Focused Process : {0}", NativeMethods.GetActiveWindowTitle());
 
-                cController.DVCLevel = 63;
-                cController.Gamma = 255;
+            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle()))
+            {
+                Console.WriteLine("[pMonitor] Target Process is focused");
+
+                var (b, c, g, dvl) = Parent.GetColorValue();
+                cController.ChangeColorRamp(b,c,g);
+                cController.DVL = dvl;
+                Console.WriteLine("B : {0:F2} C: {1:F2} G: {2:F2} DVL: {3}", b, c, g, dvl);
             }
             else
             {
-                Console.WriteLine("EFT is not focused");
-                pForm.IsTarkovActive = false;
-                pForm.debugText = windowTitle;
+                Console.WriteLine("[pMonitor] Target Process is not focused");
 
-                cController.DVCLevel = 0;
-                cController.Gamma = 128;
+                cController.ChangeColorRamp();
+                cController.ResetDVL();
             }
+        }
+
+        /**
+         * Reset to original color settings before exit
+         */
+        public void Reset()
+        {
+            Console.WriteLine("[pMonitor] Color Reset");
+            cController.ResetDVL();
+            cController.ResetGamma();
+            cController.KillTask();
+        }
+
+        private static int GetWorkingThreads()
+        {
+            System.Threading.ThreadPool.GetMaxThreads(out int maxThreads, out int _);
+            System.Threading.ThreadPool.GetAvailableThreads(out int availableThreads, out _);
+            return maxThreads - availableThreads;
         }
     }
 }
