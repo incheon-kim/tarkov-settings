@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
-using System.Threading;
-
-using NvAPIWrapper.Native;
+﻿using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display.Structures;
+using System;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 
 namespace tarkov_settings
@@ -199,9 +195,10 @@ namespace tarkov_settings
                     catch (System.ObjectDisposedException e) { }
                 });
 
-                
+
             }
-            finally {
+            finally
+            {
                 Console.WriteLine("[COLOR] Applied.");
                 if (!IntPtr.Zero.Equals(hdc))
                     Display.DeleteDC(hdc);

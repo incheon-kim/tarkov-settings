@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace tarkov_settings
 {
@@ -62,7 +60,7 @@ namespace tarkov_settings
         }
         #endregion
 
-        public MainForm Parent{ get;set; }
+        public MainForm Parent { get; set; }
 
         public ProcessMonitor()
         {
@@ -93,7 +91,7 @@ namespace tarkov_settings
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
                 var (b, c, g, dvl) = Parent.GetColorValue();
-                cController.ChangeColorRamp(b,c,g);
+                cController.ChangeColorRamp(b, c, g);
                 cController.DVL = dvl;
                 Console.WriteLine("B : {0:F2} C: {1:F2} G: {2:F2} DVL: {3}", b, c, g, dvl);
             }

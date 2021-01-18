@@ -1,15 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
-
-using NvAPIWrapper.Display;
-using NvAPIWrapper.DRS;
 
 namespace tarkov_settings
 {
@@ -23,7 +13,6 @@ namespace tarkov_settings
             // Initialize Process Monitor
             pMonitor.Parent = this;
             pMonitor.Add("EscapeFromTarkov");
-            pMonitor.Add("KakaoTalk");
 
             // Initialize Tarkov Setting Panel
 
@@ -35,26 +24,26 @@ namespace tarkov_settings
 
         public double Brightness
         {
-            get=>BrightnessBar.Value/100.0;
-            set=>BrightnessBar.Value=(int)value*100;
+            get => BrightnessBar.Value / 100.0;
+            set => BrightnessBar.Value = (int)value * 100;
         }
 
         public double Contrast
         {
-            get=>ContrastBar.Value/100.0;
-            set=>ContrastBar.Value=(int)value*100;
+            get => ContrastBar.Value / 100.0;
+            set => ContrastBar.Value = (int)value * 100;
         }
 
         public double Gamma
         {
-            get=>GammaBar.Value/100.0;
-            set=>GammaBar.Value=(int)value*100;
+            get => GammaBar.Value / 100.0;
+            set => GammaBar.Value = (int)value * 100;
         }
 
         public int DVL
         {
-            get=>DVLBar.Value;
-            set=>DVLBar.Value=value;
+            get => DVLBar.Value;
+            set => DVLBar.Value = value;
         }
 
         private bool _IsTarkovActive;
@@ -128,7 +117,7 @@ namespace tarkov_settings
             DVLText.Text = DVLBar.Value.ToString();
         }
         #endregion
-        
+
         public (double, double, double, int) GetColorValue()
         {
             return (
@@ -137,6 +126,11 @@ namespace tarkov_settings
                 GammaBar.Value / 100.0,
                 DVLBar.Value
                 );
+        }
+
+        private void ColorPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
