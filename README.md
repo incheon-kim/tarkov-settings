@@ -7,6 +7,8 @@ Change Digital Vibrance Control value from Nvidia Settings with [NvAPIWrapper](h
 
 It changes display color values when only Escape from Tarkov Window is focused so it could prevent from sudden flash from display.
 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fincheon-kim%2Ftarkov-settings&count_bg=%238C8C8C&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
+
 [**Download**](https://github.com/incheon-kim/tarkov-settings/releases/latest)
 
 ---
