@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using System.Management;
 
-namespace tarkov_settings.GraphicsDevice
+namespace tarkov_settings.GPU
 {
     class GPUDevice
     {

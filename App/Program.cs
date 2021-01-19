@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using NvAPIWrapper.GPU;
-using tarkov_settings.GraphicsDevice;
+using tarkov_settings.GPU;
 using tarkov_settings.Setting;
 
 namespace tarkov_settings
