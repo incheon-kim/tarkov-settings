@@ -31,6 +31,7 @@ It changes display color values when only Escape from Tarkov Window is focused s
 1. It might blink couple times when you active EFT window but it works. Don't worry
 2. **I don't know BSG will ban for using this.**
 3. AMD/Intel Graphics not supported yet.
+4. Only works in **Borderless mode.**
 
 ## TODO
 - [x] Process Focusing Awareness
