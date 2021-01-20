@@ -21,6 +21,9 @@ namespace tarkov_settings
             Gamma = appSetting.gamma;
             DVL = appSetting.saturation;
 
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = String.Format("Tarkov Settings {0}", version);
+
             // Saturation Initialize
             if(GPUDevice.Vendor != GPUVendor.NVIDIA)
                 DVLGroupBox.Enabled = false;
