@@ -64,17 +64,25 @@ namespace tarkov_settings
 
         public ProcessMonitor()
         {
+
+        }
+
+        public void Add(string process)
+        {
+            this.pTargets.Add(process);
+        }
+
+        public void Init()
+        {
             NativeMethods.dele = new NativeMethods.WinEventDelegate(WinEventProc);
             IntPtr m_hhook = NativeMethods.SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
                 EVENT_SYSTEM_FOREGROUND,
                 IntPtr.Zero,
                 NativeMethods.dele,
                 0, 0, WINEVENT_OUTOFCONTEXT | 2);
-        }
 
-        public void Add(string process)
-        {
-            this.pTargets.Add(process);
+            // Init ColorController
+            cController.Init();
         }
 
         /**

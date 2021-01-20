@@ -102,7 +102,7 @@ namespace tarkov_settings
 
     class ColorController
     {
-        private readonly int initialDVL;
+        private int initialDVL;
         private int currentDVL;
         private PrivateDisplayDVCInfo DVCInfo;
 
@@ -154,7 +154,12 @@ namespace tarkov_settings
 
         private ColorController()
         {
-            if(GPUDevice.Vendor == GPUVendor.NVIDIA)
+
+        }
+
+        public void Init()
+        {
+            if (GPUDevice.Vendor == GPUVendor.NVIDIA)
             {
                 DVCInfo = DisplayApi.GetDVCInfo(Display.NvDisplay);
                 initialDVL = DVCInfo.CurrentLevel;
@@ -210,8 +215,6 @@ namespace tarkov_settings
                     }
                     catch (System.ObjectDisposedException e) { }
                 });
-
-
             }
             finally
             {
@@ -256,7 +259,7 @@ namespace tarkov_settings
         internal void OnExit()
         {
             ResetDVL();
-            ResetGamma();
+            ChangeColorRamp();
             KillTask();
         }
 

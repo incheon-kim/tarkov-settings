@@ -21,24 +21,26 @@ namespace tarkov_settings
             Gamma = appSetting.gamma;
             DVL = appSetting.saturation;
 
-            // Initialize Process Monitor
-            pMonitor.Parent = this;
-            foreach(string pTarget in appSetting.pTargets)
-            {
-                pMonitor.Add(pTarget);
-            }
-
             // Saturation Initialize
             if(GPUDevice.Vendor != GPUVendor.NVIDIA)
                 DVLGroupBox.Enabled = false;
+
             // Initialize Display Dropdown
             foreach(string display in Display.WinDisplays)
             {
                 displayCombo.Items.Add(display);
             }
-            displayCombo.SelectedIndex = displayCombo.FindString(appSetting.display);
+            if(displayCombo.FindString(appSetting.display) != -1)
+                displayCombo.SelectedIndex = displayCombo.FindString(appSetting.display);
             Display.SetPrimary((string)displayCombo.SelectedItem);
-            // Initialize NvAPI Controller
+
+            // Initialize Process Monitor
+            pMonitor.Parent = this;
+            foreach (string pTarget in appSetting.pTargets)
+            {
+                pMonitor.Add(pTarget);
+            }
+            pMonitor.Init();
 
             // Initialize Win32 Gamma Control
 
