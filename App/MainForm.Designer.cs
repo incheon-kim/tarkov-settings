@@ -154,7 +154,6 @@
             // DVLGroupBox
             // 
             this.DVLGroupBox.Controls.Add(this.DVLPanel);
-            this.DVLGroupBox.Enabled = false;
             this.DVLGroupBox.Location = new System.Drawing.Point(499, 9);
             this.DVLGroupBox.Name = "DVLGroupBox";
             this.DVLGroupBox.Size = new System.Drawing.Size(145, 307);
