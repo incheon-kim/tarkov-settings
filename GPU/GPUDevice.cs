@@ -8,14 +8,16 @@ using System.Management;
 
 namespace tarkov_settings.GPU
 {
+    public enum GPUVendor
+    {
+        NVIDIA = 1,
+        AMD = 2,
+        ETC = 3
+    }
+
     class GPUDevice
     {
-        public enum GPUVendor
-        {
-            NVIDIA = 1,
-            AMD = 2,
-            ETC = 3
-        }
+
         static GPUDevice()
         {
             Vendor = GetGPUVendor();

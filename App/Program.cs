@@ -20,7 +20,7 @@ namespace tarkov_settings
         {
             switch (GPUDevice.Vendor)
             {
-                case GPUDevice.GPUVendor.NVIDIA:
+                case GPUVendor.NVIDIA:
                     NvAPIWrapper.NVIDIA.Initialize();
                     PhysicalGPU[] gpus = NvAPIWrapper.GPU.PhysicalGPU.GetPhysicalGPUs();
                     foreach (PhysicalGPU gpu in gpus)
@@ -33,18 +33,16 @@ namespace tarkov_settings
                         return;
                     }
                     break;
-                case GPUDevice.GPUVendor.AMD:
-                    System.Windows.Forms.MessageBox.Show("Intel/Etc Device Detected - Will be supported soon",
+                case GPUVendor.AMD:
+                    /* AMD Sturation(equals to Digital Vibrance of Nvidia) is not supported yet. */
+                    System.Windows.Forms.MessageBox.Show("AMD Device Detected - Saturation is not supported yet.",
                             "Nvidia GPU is not found!",
                             System.Windows.Forms.MessageBoxButtons.OK,
-                            System.Windows.Forms.MessageBoxIcon.Error
+                            System.Windows.Forms.MessageBoxIcon.Warning
                         );
-                    System.Threading.Thread.Sleep(1000);
-                    Application.Exit();
                     break;
                 default:
-                    /* AMD Sturation(equals to Digital Vibrance of Nvidia) is not supported yet. */
-                    System.Windows.Forms.MessageBox.Show("AMD Device Detected - Will be supported soon",
+                    System.Windows.Forms.MessageBox.Show("Intel/Etc Device Detected - Will be supported soon",
                             "Nvidia GPU is not found!",
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Error
@@ -61,7 +59,7 @@ namespace tarkov_settings
             Application.Run(mForm);
 
             // Unload NvAPI dll after Application.Exit()
-            if (GPUDevice.Vendor == GPUDevice.GPUVendor.NVIDIA)
+            if (GPUDevice.Vendor == GPUVendor.NVIDIA)
                 NvAPIWrapper.NVIDIA.Unload();
         }
     }

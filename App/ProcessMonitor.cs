@@ -110,9 +110,7 @@ namespace tarkov_settings
         public void Reset()
         {
             Console.WriteLine("[pMonitor] Color Reset");
-            cController.ResetDVL();
-            cController.ResetGamma();
-            cController.KillTask();
+            cController.OnExit();
         }
 
         private static int GetWorkingThreads()

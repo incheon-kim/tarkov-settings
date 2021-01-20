@@ -40,19 +40,20 @@
             this.DVLBar = new System.Windows.Forms.TrackBar();
             this.DVLText = new System.Windows.Forms.TextBox();
             this.colorGroupBox = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.colorTablePanel = new System.Windows.Forms.TableLayoutPanel();
+            this.brightnessPanel = new System.Windows.Forms.Panel();
             this.BrightnessBar = new System.Windows.Forms.TrackBar();
             this.BrightnessLabel = new System.Windows.Forms.Label();
             this.BrightnessText = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.contrastPanel = new System.Windows.Forms.Panel();
             this.ContrastBar = new System.Windows.Forms.TrackBar();
             this.ContrastText = new System.Windows.Forms.TextBox();
             this.ContrastLabel = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.gammaPanel = new System.Windows.Forms.Panel();
             this.GammaText = new System.Windows.Forms.TextBox();
             this.GammaBar = new System.Windows.Forms.TrackBar();
             this.GammaLabel = new System.Windows.Forms.Label();
+            this.displayCombo = new System.Windows.Forms.ComboBox();
             this.layoutTablePanel.SuspendLayout();
             this.SideMenu.SuspendLayout();
             this.ColorPanel.SuspendLayout();
@@ -60,12 +61,12 @@
             this.DVLPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DVLBar)).BeginInit();
             this.colorGroupBox.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.colorTablePanel.SuspendLayout();
+            this.brightnessPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BrightnessBar)).BeginInit();
-            this.panel2.SuspendLayout();
+            this.contrastPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ContrastBar)).BeginInit();
-            this.panel3.SuspendLayout();
+            this.gammaPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -94,7 +95,7 @@
             this.layoutTablePanel.RowCount = 1;
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.4669F));
             this.layoutTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.5331F));
-            this.layoutTablePanel.Size = new System.Drawing.Size(734, 326);
+            this.layoutTablePanel.Size = new System.Drawing.Size(734, 372);
             this.layoutTablePanel.TabIndex = 0;
             // 
             // SideMenu
@@ -111,7 +112,7 @@
             this.SideMenu.Location = new System.Drawing.Point(0, 5);
             this.SideMenu.Margin = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.SideMenu.Name = "SideMenu";
-            this.SideMenu.Size = new System.Drawing.Size(76, 316);
+            this.SideMenu.Size = new System.Drawing.Size(76, 362);
             this.SideMenu.TabIndex = 1;
             this.SideMenu.Text = "colorSettings";
             // 
@@ -141,17 +142,19 @@
             // 
             // ColorPanel
             // 
+            this.ColorPanel.Controls.Add(this.displayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ColorPanel.Location = new System.Drawing.Point(79, 3);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(652, 320);
+            this.ColorPanel.Size = new System.Drawing.Size(652, 366);
             this.ColorPanel.TabIndex = 2;
             // 
             // DVLGroupBox
             // 
             this.DVLGroupBox.Controls.Add(this.DVLPanel);
+            this.DVLGroupBox.Enabled = false;
             this.DVLGroupBox.Location = new System.Drawing.Point(499, 9);
             this.DVLGroupBox.Name = "DVLGroupBox";
             this.DVLGroupBox.Size = new System.Drawing.Size(145, 307);
@@ -205,7 +208,7 @@
             // 
             // colorGroupBox
             // 
-            this.colorGroupBox.Controls.Add(this.tableLayoutPanel1);
+            this.colorGroupBox.Controls.Add(this.colorTablePanel);
             this.colorGroupBox.Location = new System.Drawing.Point(3, 9);
             this.colorGroupBox.Name = "colorGroupBox";
             this.colorGroupBox.Size = new System.Drawing.Size(490, 307);
@@ -213,33 +216,33 @@
             this.colorGroupBox.TabStop = false;
             this.colorGroupBox.Text = "Color";
             // 
-            // tableLayoutPanel1
+            // colorTablePanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 18);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 286);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.colorTablePanel.ColumnCount = 1;
+            this.colorTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.colorTablePanel.Controls.Add(this.brightnessPanel, 0, 0);
+            this.colorTablePanel.Controls.Add(this.contrastPanel, 0, 1);
+            this.colorTablePanel.Controls.Add(this.gammaPanel, 0, 2);
+            this.colorTablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorTablePanel.Location = new System.Drawing.Point(3, 18);
+            this.colorTablePanel.Name = "colorTablePanel";
+            this.colorTablePanel.RowCount = 3;
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.colorTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.colorTablePanel.Size = new System.Drawing.Size(484, 286);
+            this.colorTablePanel.TabIndex = 1;
             // 
-            // panel1
+            // brightnessPanel
             // 
-            this.panel1.Controls.Add(this.BrightnessBar);
-            this.panel1.Controls.Add(this.BrightnessLabel);
-            this.panel1.Controls.Add(this.BrightnessText);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(478, 89);
-            this.panel1.TabIndex = 0;
+            this.brightnessPanel.Controls.Add(this.BrightnessBar);
+            this.brightnessPanel.Controls.Add(this.BrightnessLabel);
+            this.brightnessPanel.Controls.Add(this.BrightnessText);
+            this.brightnessPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.brightnessPanel.Location = new System.Drawing.Point(3, 3);
+            this.brightnessPanel.Name = "brightnessPanel";
+            this.brightnessPanel.Size = new System.Drawing.Size(478, 89);
+            this.brightnessPanel.TabIndex = 0;
             // 
             // BrightnessBar
             // 
@@ -274,16 +277,16 @@
             this.BrightnessText.Text = "0.50";
             this.BrightnessText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // panel2
+            // contrastPanel
             // 
-            this.panel2.Controls.Add(this.ContrastBar);
-            this.panel2.Controls.Add(this.ContrastText);
-            this.panel2.Controls.Add(this.ContrastLabel);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 98);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(478, 89);
-            this.panel2.TabIndex = 1;
+            this.contrastPanel.Controls.Add(this.ContrastBar);
+            this.contrastPanel.Controls.Add(this.ContrastText);
+            this.contrastPanel.Controls.Add(this.ContrastLabel);
+            this.contrastPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.contrastPanel.Location = new System.Drawing.Point(3, 98);
+            this.contrastPanel.Name = "contrastPanel";
+            this.contrastPanel.Size = new System.Drawing.Size(478, 89);
+            this.contrastPanel.TabIndex = 1;
             // 
             // ContrastBar
             // 
@@ -318,16 +321,16 @@
             this.ContrastLabel.Text = "Contrast";
             this.ContrastLabel.DoubleClick += new System.EventHandler(this.ColorLabel_DClick);
             // 
-            // panel3
+            // gammaPanel
             // 
-            this.panel3.Controls.Add(this.GammaText);
-            this.panel3.Controls.Add(this.GammaBar);
-            this.panel3.Controls.Add(this.GammaLabel);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 193);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(478, 90);
-            this.panel3.TabIndex = 2;
+            this.gammaPanel.Controls.Add(this.GammaText);
+            this.gammaPanel.Controls.Add(this.GammaBar);
+            this.gammaPanel.Controls.Add(this.GammaLabel);
+            this.gammaPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gammaPanel.Location = new System.Drawing.Point(3, 193);
+            this.gammaPanel.Name = "gammaPanel";
+            this.gammaPanel.Size = new System.Drawing.Size(478, 90);
+            this.gammaPanel.TabIndex = 2;
             // 
             // GammaText
             // 
@@ -362,11 +365,22 @@
             this.GammaLabel.Text = "Gamma";
             this.GammaLabel.DoubleClick += new System.EventHandler(this.ColorLabel_DClick);
             // 
+            // displayCombo
+            // 
+            this.displayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.displayCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.displayCombo.FormattingEnabled = true;
+            this.displayCombo.Location = new System.Drawing.Point(502, 328);
+            this.displayCombo.Name = "displayCombo";
+            this.displayCombo.Size = new System.Drawing.Size(139, 22);
+            this.displayCombo.TabIndex = 15;
+            this.displayCombo.SelectedValueChanged += new System.EventHandler(this.displayCombo_SelectedValueChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(734, 326);
+            this.ClientSize = new System.Drawing.Size(734, 372);
             this.Controls.Add(this.layoutTablePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -383,15 +397,15 @@
             this.DVLPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DVLBar)).EndInit();
             this.colorGroupBox.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.colorTablePanel.ResumeLayout(false);
+            this.brightnessPanel.ResumeLayout(false);
+            this.brightnessPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BrightnessBar)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.contrastPanel.ResumeLayout(false);
+            this.contrastPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ContrastBar)).EndInit();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
+            this.gammaPanel.ResumeLayout(false);
+            this.gammaPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).EndInit();
             this.ResumeLayout(false);
 
@@ -419,12 +433,13 @@
         private System.Windows.Forms.TrackBar GammaBar;
         private System.Windows.Forms.TrackBar ContrastBar;
         private System.Windows.Forms.TrackBar BrightnessBar;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.TableLayoutPanel colorTablePanel;
+        private System.Windows.Forms.Panel brightnessPanel;
+        private System.Windows.Forms.Panel contrastPanel;
+        private System.Windows.Forms.Panel gammaPanel;
         private System.Windows.Forms.GroupBox DVLGroupBox;
         private System.Windows.Forms.Panel DVLPanel;
+        private System.Windows.Forms.ComboBox displayCombo;
     }
 }
 

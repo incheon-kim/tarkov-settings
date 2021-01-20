@@ -4,8 +4,11 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
+
+using tarkov_settings.GPU;
 
 namespace tarkov_settings
 {
@@ -47,8 +50,11 @@ namespace tarkov_settings
 
     class Display
     {
-        public readonly static DisplayHandle NvDisplay;
-        public readonly static string WinDisplay;
+        public static DisplayHandle NvDisplay;
+        public static string WinDisplay;
+
+        //public readonly static DisplayHandle [] NvDisplays;
+        public readonly static List<string> WinDisplays;
 
         [DllImport("gdi32")]
         public static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
@@ -58,22 +64,28 @@ namespace tarkov_settings
 
         static Display()
         {
-            NvDisplay = DisplayApi.EnumNvidiaDisplayHandle()[0];
-            WinDisplay = GetWinDisplayName();
+            if(GPUDevice.Vendor == GPUVendor.NVIDIA)
+                NvDisplay = DisplayApi.EnumNvidiaDisplayHandle()[0];
+            WinDisplays = GetWinDisplays();
         }
-        private static string GetWinDisplayName()
+
+        public static void SetPrimary(string display)
         {
-            Screen display = null;
+            if(GPUDevice.Vendor == GPUVendor.NVIDIA)
+            {
+                NvDisplay = DisplayApi.GetAssociatedNvidiaDisplayHandle(display);
+            }
+            WinDisplay = display;
+        }
+
+        private static List<string> GetWinDisplays()
+        {
+            List<string> list = new List<string>();
             foreach (Screen screen in Screen.AllScreens)
             {
-                if (screen.Primary)
-                {
-                    Console.WriteLine(screen.DeviceName);
-                    display = screen;
-                }
+                list.Add(screen.DeviceName);
             }
-
-            return display?.DeviceName ?? null;
+            return list;
         }
     }
 
@@ -130,20 +142,24 @@ namespace tarkov_settings
             get => this.currentDVL;
             set
             {
-                if (value <= DVCInfo.MaximumLevel && value >= DVCInfo.MinimumLevel)
-                {
-                    this.currentDVL = value;
-                    DisplayApi.SetDVCLevel(Display.NvDisplay, this.currentDVL);
-                    Console.WriteLine("[DVC] Applied");
-                }
+                if(GPUDevice.Vendor == GPUVendor.NVIDIA)
+                    if (value <= DVCInfo.MaximumLevel && value >= DVCInfo.MinimumLevel)
+                    {
+                        this.currentDVL = value;
+                        DisplayApi.SetDVCLevel(Display.NvDisplay, this.currentDVL);
+                        Console.WriteLine("[DVC] Applied");
+                    }
             }
         }
 
         private ColorController()
         {
-            DVCInfo = DisplayApi.GetDVCInfo(Display.NvDisplay);
-            initialDVL = DVCInfo.CurrentLevel;
-            DVL = DVCInfo.CurrentLevel;
+            if(GPUDevice.Vendor == GPUVendor.NVIDIA)
+            {
+                DVCInfo = DisplayApi.GetDVCInfo(Display.NvDisplay);
+                initialDVL = DVCInfo.CurrentLevel;
+                DVL = DVCInfo.CurrentLevel;
+            }
 
             // Backup Gamma Ramp
             var hdc = IntPtr.Zero;
@@ -208,7 +224,19 @@ namespace tarkov_settings
         public void ResetDVL()
         {
             Console.WriteLine("[DVL] Reset to : {0}", this.initialDVL);
-            DisplayApi.SetDVCLevel(Display.NvDisplay, DVCInfo.MinimumLevel);
+            switch(GPUDevice.Vendor)
+            {
+                case GPUVendor.NVIDIA:
+                    DisplayApi.SetDVCLevel(Display.NvDisplay, DVCInfo.MinimumLevel);
+                    break;
+
+                case GPUVendor.AMD:
+
+                    break;
+                default:
+
+                    break;
+            }
         }
 
         public void ResetGamma()
@@ -224,6 +252,12 @@ namespace tarkov_settings
                 if (!IntPtr.Zero.Equals(hdc))
                     Display.DeleteDC(hdc);
             }
+        }
+        internal void OnExit()
+        {
+            ResetDVL();
+            ResetGamma();
+            KillTask();
         }
 
         /*

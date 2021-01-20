@@ -40,5 +40,5 @@ It changes display color values when only Escape from Tarkov Window is focused s
 - [x] GUI
 - [x] ini or json configuration
 - [x] Process Changeability (Not only for EscapeFromTarkov)
-- [ ] change display(monitor) target
+- [x] change display(monitor) target
 - [ ] EFT setting modify (Framelimit or Graphic Settings)

@@ -15,5 +15,6 @@ namespace tarkov_settings.Setting
         public HashSet<string> pTargets = new HashSet<string>{
             "EscapeFromTarkov"
         };
+        public string display = @"\\.\DISPLAY1";
     }
 }

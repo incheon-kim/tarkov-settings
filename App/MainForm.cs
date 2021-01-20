@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using tarkov_settings.Setting;
+using tarkov_settings.GPU;
 
 namespace tarkov_settings
 {
@@ -27,8 +28,16 @@ namespace tarkov_settings
                 pMonitor.Add(pTarget);
             }
 
-            // Initialize Tarkov Setting Panel
-
+            // Saturation Initialize
+            if(GPUDevice.Vendor != GPUVendor.NVIDIA)
+                DVLGroupBox.Enabled = false;
+            // Initialize Display Dropdown
+            foreach(string display in Display.WinDisplays)
+            {
+                displayCombo.Items.Add(display);
+            }
+            displayCombo.SelectedIndex = displayCombo.FindString(appSetting.display);
+            Display.SetPrimary((string)displayCombo.SelectedItem);
             // Initialize NvAPI Controller
 
             // Initialize Win32 Gamma Control
@@ -82,6 +91,7 @@ namespace tarkov_settings
             appSetting.contrast = Contrast;
             appSetting.gamma = Gamma;
             appSetting.saturation = DVL;
+            appSetting.display = (string)displayCombo.SelectedItem;
             appSetting.Save();
 
             pMonitor.Reset();
@@ -133,6 +143,10 @@ namespace tarkov_settings
             {
                 DVLText.Text = DVLBar.Value.ToString();
             }
+        }
+        private void displayCombo_SelectedValueChanged(object sender, EventArgs e)
+        {
+            Display.SetPrimary((string)displayCombo.SelectedItem);
         }
         #endregion
     }
