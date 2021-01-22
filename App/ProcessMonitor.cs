@@ -59,7 +59,7 @@ namespace tarkov_settings
 
         public MainForm Parent { get; set; }
 
-        public ProcessMonitor()
+        private ProcessMonitor()
         {
 
         }
@@ -117,7 +117,7 @@ namespace tarkov_settings
         public void Reset()
         {
             Console.WriteLine("[pMonitor] Color Reset");
-            cController.OnExit();
+            cController.Close();
         }
 
         private static int GetWorkingThreads()

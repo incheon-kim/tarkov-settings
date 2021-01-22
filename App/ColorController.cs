@@ -160,7 +160,7 @@ namespace tarkov_settings
             }catch (NotImplementedException){ }
         }
 
-        internal void OnExit()
+        internal void Close()
         {
             ResetDVL();
 
