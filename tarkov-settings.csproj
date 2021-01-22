@@ -124,6 +124,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\ColorController.cs" />
+    <Compile Include="Display\Display.cs" />
+    <Compile Include="GPU\AMD.cs" />
     <Compile Include="GPU\GPUDevice.cs" />
     <Compile Include="App\MainForm.cs">
       <SubType>Form</SubType>
@@ -133,7 +135,14 @@
     </Compile>
     <Compile Include="App\ProcessMonitor.cs" />
     <Compile Include="App\Program.cs" />
+    <Compile Include="GPU\IGpu.cs" />
+    <Compile Include="GPU\NVIDIA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Setting\AppSetting.cs" />
     <Compile Include="Setting\Setting.cs" />
     <Compile Include="Setting\Resolution.cs" />
@@ -144,14 +153,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -167,21 +171,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\nikita.jfif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\nikita.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\nikita_rainbow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\nikita1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\nikita_rainbow1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="T.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

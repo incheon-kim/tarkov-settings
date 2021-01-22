@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Management;
 
 namespace tarkov_settings.GPU
@@ -17,36 +12,32 @@ namespace tarkov_settings.GPU
 
     class GPUDevice
     {
-
-        static GPUDevice()
-        {
-            Vendor = GetGPUVendor();
-        }
-        public static GPUVendor Vendor;
-        public static GPUVendor GetGPUVendor()
-        {
-            using (var searcher = new ManagementObjectSearcher("select * from Win32_VideoController"))
+        private static readonly Lazy<IGPU> instance =
+            new Lazy<IGPU>(() =>
             {
-                foreach (ManagementObject obj in searcher.Get())
+                using (var searcher = new ManagementObjectSearcher("select * from Win32_VideoController"))
                 {
-                    if (obj["Name"].ToString().Contains("NVIDIA"))
+                    foreach (ManagementObject obj in searcher.Get())
                     {
-                        return GPUVendor.NVIDIA;
+                        if (obj["Name"].ToString().Contains("NVIDIA"))
+                        {
+                            return new NVIDIA(GPUVendor.NVIDIA);
+                        }
+                        else if (obj["Name"].ToString().Contains("AMD"))
+                        {
+                            return new AMD(GPUVendor.AMD);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
                     }
-                    else if (obj["Name"].ToString().Contains("AMD"))
-                    {
-
-
-                        return GPUVendor.AMD;
-                    }
-                    else
-                    {
-                        return GPUVendor.ETC;
-                    }
+                    throw new NotImplementedException();
                 }
-
-                return GPUVendor.ETC;
-            }
+            });
+        public static IGPU Instance
+        {
+            get => instance.Value;
         }
     }
 }

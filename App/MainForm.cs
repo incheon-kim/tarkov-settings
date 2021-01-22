@@ -8,11 +8,14 @@ namespace tarkov_settings
     public partial class MainForm : Form
     {
         private ProcessMonitor pMonitor = ProcessMonitor.Instance;
+        private IGPU gpu = GPUDevice.Instance;
         private AppSetting appSetting;
+        
         public MainForm()
         {
             InitializeComponent();
 
+            #region Load App Settings
             // Load Settings
             appSetting = AppSetting.Load();
 
@@ -20,36 +23,38 @@ namespace tarkov_settings
             Contrast = appSetting.contrast;
             Gamma = appSetting.gamma;
             DVL = appSetting.saturation;
-
+            #endregion
+            
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = String.Format("Tarkov Settings {0}", version);
 
             // Saturation Initialize
-            if(GPUDevice.Vendor != GPUVendor.NVIDIA)
+            if(gpu.Vendor != GPUVendor.NVIDIA)
                 DVLGroupBox.Enabled = false;
 
+            #region Initialize Display
             // Initialize Display Dropdown
-            foreach(string display in Display.WinDisplays)
+            foreach (string display in Display.displays)
             {
-                displayCombo.Items.Add(display);
+                DisplayCombo.Items.Add(display);
             }
-            if(displayCombo.FindString(appSetting.display) != -1)
-                displayCombo.SelectedIndex = displayCombo.FindString(appSetting.display);
-            Display.SetPrimary((string)displayCombo.SelectedItem);
+            
+            if(DisplayCombo.FindString(appSetting.display) != -1)
+                DisplayCombo.SelectedIndex = DisplayCombo.FindString(appSetting.display);
+
+            Display.Primary = (string)DisplayCombo.SelectedItem;
+            #endregion
 
             // Initialize Process Monitor
             pMonitor.Parent = this;
             foreach (string pTarget in appSetting.pTargets)
             {
-                pMonitor.Add(pTarget);
+                pMonitor.Add(pTarget.ToLower());
             }
             pMonitor.Init();
-
-            // Initialize Win32 Gamma Control
-
         }
 
-        #region BCGD Getter/Setter
+        #region BCGS Getter/Setter
         public double Brightness
         {
             get => BrightnessBar.Value / 100.0;
@@ -96,7 +101,7 @@ namespace tarkov_settings
             appSetting.contrast = Contrast;
             appSetting.gamma = Gamma;
             appSetting.saturation = DVL;
-            appSetting.display = (string)displayCombo.SelectedItem;
+            appSetting.display = (string)DisplayCombo.SelectedItem;
             appSetting.Save();
 
             pMonitor.Reset();
@@ -127,7 +132,6 @@ namespace tarkov_settings
                 DVLBar.Value = 0;
             }
         }
-
         private void TrackBar_ValueChanged(object sender, EventArgs e)
         {
             var trackBar = sender as TrackBar;
@@ -149,9 +153,15 @@ namespace tarkov_settings
                 DVLText.Text = DVLBar.Value.ToString();
             }
         }
-        private void displayCombo_SelectedValueChanged(object sender, EventArgs e)
+        private void DisplayCombo_SelectedValueChanged(object sender, EventArgs e)
         {
-            Display.SetPrimary((string)displayCombo.SelectedItem);
+            string selectedDisplay = (string)DisplayCombo.SelectedItem;
+            Display.Primary = selectedDisplay;
+
+            if(Display.Primary != selectedDisplay)
+            {
+                DisplayCombo.SelectedIndex = DisplayCombo.FindString(Display.Primary);
+            }
         }
         #endregion
     }

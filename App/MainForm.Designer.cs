@@ -34,6 +34,7 @@
             this.MiscsButton = new System.Windows.Forms.ToolStripButton();
             this.ColorButton = new System.Windows.Forms.ToolStripButton();
             this.ColorPanel = new System.Windows.Forms.Panel();
+            this.DisplayCombo = new System.Windows.Forms.ComboBox();
             this.DVLGroupBox = new System.Windows.Forms.GroupBox();
             this.DVLPanel = new System.Windows.Forms.Panel();
             this.DVLLabel = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.GammaText = new System.Windows.Forms.TextBox();
             this.GammaBar = new System.Windows.Forms.TrackBar();
             this.GammaLabel = new System.Windows.Forms.Label();
-            this.displayCombo = new System.Windows.Forms.ComboBox();
             this.layoutTablePanel.SuspendLayout();
             this.SideMenu.SuspendLayout();
             this.ColorPanel.SuspendLayout();
@@ -142,7 +142,7 @@
             // 
             // ColorPanel
             // 
-            this.ColorPanel.Controls.Add(this.displayCombo);
+            this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
             this.ColorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -150,6 +150,17 @@
             this.ColorPanel.Name = "ColorPanel";
             this.ColorPanel.Size = new System.Drawing.Size(652, 366);
             this.ColorPanel.TabIndex = 2;
+            // 
+            // DisplayCombo
+            // 
+            this.DisplayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DisplayCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.DisplayCombo.FormattingEnabled = true;
+            this.DisplayCombo.Location = new System.Drawing.Point(502, 328);
+            this.DisplayCombo.Name = "DisplayCombo";
+            this.DisplayCombo.Size = new System.Drawing.Size(139, 22);
+            this.DisplayCombo.TabIndex = 15;
+            this.DisplayCombo.SelectedValueChanged += new System.EventHandler(this.DisplayCombo_SelectedValueChanged);
             // 
             // DVLGroupBox
             // 
@@ -364,17 +375,6 @@
             this.GammaLabel.Text = "Gamma";
             this.GammaLabel.DoubleClick += new System.EventHandler(this.ColorLabel_DClick);
             // 
-            // displayCombo
-            // 
-            this.displayCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.displayCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.displayCombo.FormattingEnabled = true;
-            this.displayCombo.Location = new System.Drawing.Point(502, 328);
-            this.displayCombo.Name = "displayCombo";
-            this.displayCombo.Size = new System.Drawing.Size(139, 22);
-            this.displayCombo.TabIndex = 15;
-            this.displayCombo.SelectedValueChanged += new System.EventHandler(this.displayCombo_SelectedValueChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -438,7 +438,7 @@
         private System.Windows.Forms.Panel gammaPanel;
         private System.Windows.Forms.GroupBox DVLGroupBox;
         private System.Windows.Forms.Panel DVLPanel;
-        private System.Windows.Forms.ComboBox displayCombo;
+        private System.Windows.Forms.ComboBox DisplayCombo;
     }
 }
 

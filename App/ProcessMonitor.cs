@@ -15,9 +15,6 @@ namespace tarkov_settings
         [DllImport("user32.dll")]
         public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
-        private const uint WINEVENT_OUTOFCONTEXT = 0;
-        private const uint EVENT_SYSTEM_FOREGROUND = 3;
-
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
 
@@ -90,24 +87,26 @@ namespace tarkov_settings
          */
         public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            //cController.AbortThread();
-            Console.WriteLine("Running Tasks : " + GetWorkingThreads());
+            Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
             Console.WriteLine("Focused Process : {0}", NativeMethods.GetActiveWindowTitle());
 
-            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle()))
+            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle().ToLower()))
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
                 var (b, c, g, dvl) = Parent.GetColorValue();
-                cController.ChangeColorRamp(b, c, g);
+                cController.ChangeColorRamp(brightness: b,
+                                            contrast: c,
+                                            gamma: g,
+                                            reset: false);
                 cController.DVL = dvl;
-                Console.WriteLine("B : {0:F2} C: {1:F2} G: {2:F2} DVL: {3}", b, c, g, dvl);
+
+                Console.WriteLine("[COLOR] B : {0:F2} C: {1:F2} G: {2:F2} DVL: {3}", b, c, g, dvl);
             }
             else
             {
                 Console.WriteLine("[pMonitor] Target Process is not focused");
-
-                cController.ChangeColorRamp();
+                cController.ChangeColorRamp(reset: true);
                 cController.ResetDVL();
             }
         }
