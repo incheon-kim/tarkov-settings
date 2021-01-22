@@ -45,7 +45,11 @@ namespace tarkov_settings
                 {
                     _primary = displays[0];
                 }
-                gpu.Load(_primary);
+                try
+                {
+                    gpu.Load(_primary);
+                }
+                catch (NotImplementedException) { }
             }
         }
 
