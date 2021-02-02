@@ -81,39 +81,51 @@ namespace tarkov_settings
             {
                 hdc = Display.CreateDC(null, Display.Primary, null, IntPtr.Zero);
 
-                ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
-                currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
-
-                if (_canceller != null)
+                try
                 {
-                    _canceller.Cancel();
-                    _canceller.Dispose();
+                    if (_canceller != null)
+                    {
+                        _canceller.Cancel();
+                        _canceller.Dispose();
+                    }
                 }
+                catch (ObjectDisposedException) { }
 
-                _canceller = new CancellationTokenSource();
-                var token = _canceller.Token;
-
-                await Task.Run(() =>
+                if (reset)
+                {                    
+                   SetDeviceGammaRamp(hdc, ref originalRamps);
+                }
+                else
                 {
+                    ushort[] iArrayValue = CalculateLUT(brightness, contrast, gamma);
+                    currentRamps.Red = currentRamps.Blue = currentRamps.Green = iArrayValue;
+
+                    _canceller = new CancellationTokenSource();
+                    CancellationToken token;
                     try
                     {
-                        do
-                        {
-                            if (reset)
-                                SetDeviceGammaRamp(hdc, ref originalRamps);
-                            else
-                                SetDeviceGammaRamp(hdc, ref currentRamps);
-                            Thread.Sleep(250);
-                            if (token.IsCancellationRequested)
-                                break;
-                        } while (true);
+                        token = _canceller.Token;
                     }
-                    catch (System.ObjectDisposedException) { }
-                });
+                    catch (ObjectDisposedException) { }
+
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            do
+                            {
+                                SetDeviceGammaRamp(hdc, ref currentRamps);
+                                Thread.Sleep(250);
+                                if (token.IsCancellationRequested)
+                                    break;
+                            } while (true);
+                        }
+                        catch (ObjectDisposedException) { }
+                    });
+                }
             }
             finally
             {
-                Console.WriteLine("[COLOR] Applied.");
                 if (!IntPtr.Zero.Equals(hdc))
                     Display.DeleteDC(hdc);
             }
@@ -163,14 +175,18 @@ namespace tarkov_settings
         internal void Close()
         {
             ResetDVL();
-
             ChangeColorRamp(reset: true);
-            
-            if (_canceller != null)
+
+            try
             {
-                _canceller.Cancel();
-                _canceller.Dispose();
+                if (_canceller != null)
+                {
+                    _canceller.Cancel();
+                    _canceller.Dispose();
+                }
             }
+            catch (ObjectDisposedException) { }
         }
+
     }
 }

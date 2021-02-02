@@ -7,13 +7,35 @@ namespace tarkov_settings
 {
     static class NativeMethods
     {
+        private const uint WINEVENT_OUTOFCONTEXT = 0;
+        private const uint EVENT_SYSTEM_FOREGROUND = 3;
+
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hWnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         public static WinEventDelegate dele = null;
 
+        private static IntPtr m_hhook;
+
+        public static void SetHook()
+        {
+            m_hhook = SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
+                EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero,
+                dele,
+                0, 0, WINEVENT_OUTOFCONTEXT | 2);
+        }
+
+        public static void UnHook()
+        {
+            UnhookWinEvent(m_hhook);
+        }
+
         #region Win32 API Calls
         [DllImport("user32.dll")]
         public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr UnhookWinEvent(IntPtr hWinEventHook);
 
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
@@ -37,8 +59,7 @@ namespace tarkov_settings
     }
     class ProcessMonitor
     {
-        private const uint WINEVENT_OUTOFCONTEXT = 0;
-        private const uint EVENT_SYSTEM_FOREGROUND = 3;
+        private NativeMethods.WinEventDelegate processHook;
 
         private readonly ColorController cController = ColorController.Instance;
 
@@ -59,10 +80,7 @@ namespace tarkov_settings
 
         public MainForm Parent { get; set; }
 
-        private ProcessMonitor()
-        {
-
-        }
+        private ProcessMonitor() { }
 
         public void Add(string process)
         {
@@ -71,12 +89,9 @@ namespace tarkov_settings
 
         public void Init()
         {
-            NativeMethods.dele = new NativeMethods.WinEventDelegate(WinEventProc);
-            IntPtr m_hhook = NativeMethods.SetWinEventHook(EVENT_SYSTEM_FOREGROUND,
-                EVENT_SYSTEM_FOREGROUND,
-                IntPtr.Zero,
-                NativeMethods.dele,
-                0, 0, WINEVENT_OUTOFCONTEXT | 2);
+            processHook = new NativeMethods.WinEventDelegate(WinEventProc);
+            NativeMethods.dele += processHook;
+            NativeMethods.SetHook();
 
             // Init ColorController
             cController.Init();
@@ -90,7 +105,7 @@ namespace tarkov_settings
             Console.WriteLine("Running Tasks : {0}", GetWorkingThreads());
             Console.WriteLine("Focused Process : {0}", NativeMethods.GetActiveWindowTitle());
 
-            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle().ToLower()))
+            if (this.pTargets.Contains(NativeMethods.GetActiveWindowTitle().ToLower()) && Parent.IsEnabled)
             {
                 Console.WriteLine("[pMonitor] Target Process is focused");
 
@@ -100,8 +115,6 @@ namespace tarkov_settings
                                             gamma: g,
                                             reset: false);
                 cController.DVL = dvl;
-
-                Console.WriteLine("[COLOR] B : {0:F2} C: {1:F2} G: {2:F2} DVL: {3}", b, c, g, dvl);
             }
             else
             {
@@ -114,9 +127,13 @@ namespace tarkov_settings
         /**
          * Reset to original color settings before exit
          */
-        public void Reset()
+        public void Close()
         {
-            Console.WriteLine("[pMonitor] Color Reset");
+            Console.WriteLine("[pMonitor] Remove Delegates");
+            NativeMethods.dele -= processHook;
+            NativeMethods.UnHook();
+
+            Console.WriteLine("[pMonitor] Resetting Color");
             cController.Close();
         }
 

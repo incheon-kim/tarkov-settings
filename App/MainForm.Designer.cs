@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.layoutTablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.SideMenu = new System.Windows.Forms.ToolStrip();
@@ -54,6 +55,12 @@
             this.GammaText = new System.Windows.Forms.TextBox();
             this.GammaBar = new System.Windows.Forms.TrackBar();
             this.GammaLabel = new System.Windows.Forms.Label();
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.minimizeStartCheckBox = new System.Windows.Forms.CheckBox();
             this.layoutTablePanel.SuspendLayout();
             this.SideMenu.SuspendLayout();
             this.ColorPanel.SuspendLayout();
@@ -68,6 +75,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ContrastBar)).BeginInit();
             this.gammaPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).BeginInit();
+            this.trayMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // layoutTablePanel
@@ -142,6 +150,7 @@
             // 
             // ColorPanel
             // 
+            this.ColorPanel.Controls.Add(this.minimizeStartCheckBox);
             this.ColorPanel.Controls.Add(this.DisplayCombo);
             this.ColorPanel.Controls.Add(this.DVLGroupBox);
             this.ColorPanel.Controls.Add(this.colorGroupBox);
@@ -375,6 +384,59 @@
             this.GammaLabel.Text = "Gamma";
             this.GammaLabel.DoubleClick += new System.EventHandler(this.ColorLabel_DClick);
             // 
+            // trayIcon
+            // 
+            this.trayIcon.ContextMenuStrip = this.trayMenuStrip;
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Text = "Tarkov Settings";
+            this.trayIcon.Visible = true;
+            this.trayIcon.DoubleClick += new System.EventHandler(this.ShowForm);
+            // 
+            // trayMenuStrip
+            // 
+            this.trayMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableToolStripMenuItem,
+            this.showToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.trayMenuStrip.Name = "trayMenuStrip";
+            this.trayMenuStrip.Size = new System.Drawing.Size(110, 70);
+            // 
+            // enableToolStripMenuItem
+            // 
+            this.enableToolStripMenuItem.Checked = true;
+            this.enableToolStripMenuItem.CheckOnClick = true;
+            this.enableToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.enableToolStripMenuItem.Text = "Enable";
+            // 
+            // showToolStripMenuItem
+            // 
+            this.showToolStripMenuItem.Name = "showToolStripMenuItem";
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.showToolStripMenuItem.Text = "Show";
+            this.showToolStripMenuItem.Click += new System.EventHandler(this.ShowForm);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitFormClicked);
+            // 
+            // minimizeStartCheckBox
+            // 
+            this.minimizeStartCheckBox.AutoSize = true;
+            this.minimizeStartCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.minimizeStartCheckBox.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.minimizeStartCheckBox.Location = new System.Drawing.Point(289, 332);
+            this.minimizeStartCheckBox.Name = "minimizeStartCheckBox";
+            this.minimizeStartCheckBox.Size = new System.Drawing.Size(201, 18);
+            this.minimizeStartCheckBox.TabIndex = 16;
+            this.minimizeStartCheckBox.Text = "Minimize to Tray on Start";
+            this.minimizeStartCheckBox.UseVisualStyleBackColor = false;
+            this.minimizeStartCheckBox.CheckedChanged += new System.EventHandler(this.CheckOnMinimizeToTray);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -386,11 +448,13 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Tarkov Settings";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.layoutTablePanel.ResumeLayout(false);
             this.SideMenu.ResumeLayout(false);
             this.SideMenu.PerformLayout();
             this.ColorPanel.ResumeLayout(false);
+            this.ColorPanel.PerformLayout();
             this.DVLGroupBox.ResumeLayout(false);
             this.DVLPanel.ResumeLayout(false);
             this.DVLPanel.PerformLayout();
@@ -406,6 +470,7 @@
             this.gammaPanel.ResumeLayout(false);
             this.gammaPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GammaBar)).EndInit();
+            this.trayMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -439,6 +504,12 @@
         private System.Windows.Forms.GroupBox DVLGroupBox;
         private System.Windows.Forms.Panel DVLPanel;
         private System.Windows.Forms.ComboBox DisplayCombo;
+        private System.Windows.Forms.NotifyIcon trayIcon;
+        private System.Windows.Forms.ContextMenuStrip trayMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.CheckBox minimizeStartCheckBox;
     }
 }
 

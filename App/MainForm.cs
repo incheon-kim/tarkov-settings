@@ -10,7 +10,9 @@ namespace tarkov_settings
         private ProcessMonitor pMonitor = ProcessMonitor.Instance;
         private IGPU gpu = GPUDevice.Instance;
         private AppSetting appSetting;
-        
+
+        private bool minimizeOnStart = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -23,6 +25,8 @@ namespace tarkov_settings
             Contrast = appSetting.contrast;
             Gamma = appSetting.gamma;
             DVL = appSetting.saturation;
+            minimizeOnStart = appSetting.minimizeOnStart;
+            this.minimizeStartCheckBox.Checked = minimizeOnStart;
             #endregion
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -90,24 +94,21 @@ namespace tarkov_settings
         }
         #endregion
 
+        public bool IsEnabled { get=> this.enableToolStripMenuItem.Checked;}
+
         private void MainForm_Load(object sender, EventArgs e)
         {
-
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            appSetting.brightness = Brightness;
-            appSetting.contrast = Contrast;
-            appSetting.gamma = Gamma;
-            appSetting.saturation = DVL;
-            appSetting.display = (string)DisplayCombo.SelectedItem;
-            appSetting.Save();
-
-            pMonitor.Reset();
-            
-            base.OnClosed(e);
-            Environment.Exit(0);
+            if (minimizeOnStart)
+            {
+                this.Visible = false;
+                this.ShowInTaskbar = false;
+                this.trayIcon.ShowBalloonTip(
+                    2500,
+                    "Tarkov Settings Initailized!",
+                    "Check out tray to modify your color setting",
+                    ToolTipIcon.Info
+                    );
+            }
         }
 
         #region Control Event Handlers
@@ -164,5 +165,45 @@ namespace tarkov_settings
             }
         }
         #endregion
+
+        private void ShowForm(object sender, EventArgs e)
+        {
+            this.Visible = true;
+            this.ShowInTaskbar = true;
+        }
+
+        private void ExitFormClicked(object sender, EventArgs e)
+        {
+            appSetting.brightness = Brightness;
+            appSetting.contrast = Contrast;
+            appSetting.gamma = Gamma;
+            appSetting.saturation = DVL;
+            appSetting.display = (string)DisplayCombo.SelectedItem;
+            appSetting.minimizeOnStart = minimizeOnStart;
+            appSetting.Save();
+
+            Application.Exit();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+            else
+            {
+                Console.WriteLine(e.CloseReason);
+                this.trayIcon.Dispose();
+                Console.WriteLine("[mainForm] Closing pMonitor");
+                pMonitor.Close();
+            }
+        }
+
+        private void CheckOnMinimizeToTray(object sender, EventArgs e)
+        {
+            this.minimizeOnStart = this.minimizeStartCheckBox.Checked;
+        }
     }
 }

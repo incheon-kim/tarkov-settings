@@ -16,5 +16,6 @@ namespace tarkov_settings.Setting
             "EscapeFromTarkov"
         };
         public string display = @"\\.\DISPLAY1";
+        public bool minimizeOnStart = false;
     }
 }
