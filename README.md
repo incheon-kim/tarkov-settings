@@ -54,4 +54,6 @@ Intel/Etc is not supported yet.
 - [x] Process Changeability (Not only for EscapeFromTarkov)
 - [x] change display(monitor) target
 - [x] Minimize to tray
+- [ ] Profiles
+- [ ] Hot Keys
 - [ ] EFT setting modify (Framelimit or Graphic Settings)
