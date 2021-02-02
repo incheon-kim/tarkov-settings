@@ -9,7 +9,7 @@ namespace tarkov_settings
         private Version current, latest;
 
         // Utilize repository's file as version notifier
-        // I know it sounds very dangerouse. but i am broke as hell.
+        // I know it sounds very dangerous. but i am broke as hell.
         private string downloadUrl = @"https://github.com/incheon-kim/tarkov-settings/releases/latest";
         private string checkUrl = @"https://raw.githubusercontent.com/incheon-kim/tarkov-settings/main/version";
         public UpdateNotifier(Version current)
@@ -31,7 +31,7 @@ namespace tarkov_settings
 
                     string version = await response.Content.ReadAsStringAsync();
                     this.LatestVersionLabel.Text = version;
-                    latest = new Version("1254125123");
+                    latest = new Version(version);
                     if(latest > current)
                     {
                         this.ShowDialog();
