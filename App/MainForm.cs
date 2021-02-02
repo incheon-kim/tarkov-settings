@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Windows.Forms;
 using tarkov_settings.Setting;
 using tarkov_settings.GPU;
@@ -31,6 +32,7 @@ namespace tarkov_settings
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = String.Format("Tarkov Settings {0}", version);
+            UpdateNotifier notifier = new UpdateNotifier(version);
 
             // Saturation Initialize
             if(gpu.Vendor != GPUVendor.NVIDIA)
