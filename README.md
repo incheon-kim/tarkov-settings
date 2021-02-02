@@ -44,7 +44,7 @@ Intel/Etc is not supported yet.
 5. ## Only works in **Borderless mode.**
 6. Nvidia Optimus Environment (mostly laptops) is not tested.
 
-## TODO
+## TODO / Feature
 - [x] Process Focusing Awareness
 - [x] Digital Vibrance Value Change
 - [x] Gamma Value Change
@@ -53,4 +53,5 @@ Intel/Etc is not supported yet.
 - [x] ini or json configuration
 - [x] Process Changeability (Not only for EscapeFromTarkov)
 - [x] change display(monitor) target
+- [x] Minimize to tray
 - [ ] EFT setting modify (Framelimit or Graphic Settings)
