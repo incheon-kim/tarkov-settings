@@ -7,6 +7,9 @@ namespace tarkov_settings
     public partial class UpdateNotifier : Form
     {
         private Version current, latest;
+
+        // Utilize repository's file as version notifier
+        // I know it sounds very dangerouse. but i am broke as hell.
         private string downloadUrl = @"https://github.com/incheon-kim/tarkov-settings/releases/latest";
         private string checkUrl = @"https://raw.githubusercontent.com/incheon-kim/tarkov-settings/main/version";
         public UpdateNotifier(Version current)
@@ -28,15 +31,21 @@ namespace tarkov_settings
 
                     string version = await response.Content.ReadAsStringAsync();
                     this.LatestVersionLabel.Text = version;
-                    latest = new Version(version);
+                    latest = new Version("1254125123");
                     if(latest > current)
                     {
                         this.ShowDialog();
                     }
                 }
-                catch (HttpRequestException e)
+                catch (Exception)
                 {
-                    Console.WriteLine(e.Message);
+                    // when response returns error or invalid string
+                    this.Text = "Update Check Failure";
+                    UpdateNotifyLabel.Text = "Update Check Failure\nPlease Visit Github Repository";
+                    latestLabel.Visible = LatestVersionLabel.Visible = false;
+                    UpdateButton.Text = "Visit";
+                    downloadUrl = @"https://github.com/incheon-kim/tarkov-settings";
+                    this.ShowDialog();
                 }
             }
         }

@@ -32,10 +32,10 @@ namespace tarkov_settings
             
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = String.Format("Tarkov Settings {0}", version);
-            UpdateNotifier notifier = new UpdateNotifier(version);
+            _ = new UpdateNotifier(version);
 
             // Saturation Initialize
-            if(gpu.Vendor != GPUVendor.NVIDIA)
+            if (gpu.Vendor != GPUVendor.NVIDIA)
                 DVLGroupBox.Enabled = false;
 
             #region Initialize Display

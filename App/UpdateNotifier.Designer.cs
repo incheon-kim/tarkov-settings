@@ -37,12 +37,20 @@ namespace tarkov_settings
             this.CurrentVersionLabel = new System.Windows.Forms.Label();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
             this.UpdateNotifyLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // currentLabel
             // 
             this.currentLabel.AutoSize = true;
-            this.currentLabel.Location = new System.Drawing.Point(20, 45);
+            this.currentLabel.Location = new System.Drawing.Point(57, 9);
             this.currentLabel.Name = "currentLabel";
             this.currentLabel.Size = new System.Drawing.Size(70, 14);
             this.currentLabel.TabIndex = 0;
@@ -51,7 +59,7 @@ namespace tarkov_settings
             // latestLabel
             // 
             this.latestLabel.AutoSize = true;
-            this.latestLabel.Location = new System.Drawing.Point(27, 65);
+            this.latestLabel.Location = new System.Drawing.Point(64, 29);
             this.latestLabel.Name = "latestLabel";
             this.latestLabel.Size = new System.Drawing.Size(63, 14);
             this.latestLabel.TabIndex = 1;
@@ -60,7 +68,7 @@ namespace tarkov_settings
             // UpdateButton
             // 
             this.UpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.UpdateButton.Location = new System.Drawing.Point(86, 95);
+            this.UpdateButton.Location = new System.Drawing.Point(99, 5);
             this.UpdateButton.Name = "UpdateButton";
             this.UpdateButton.Size = new System.Drawing.Size(75, 23);
             this.UpdateButton.TabIndex = 2;
@@ -70,7 +78,7 @@ namespace tarkov_settings
             // 
             // UpdateCancelButton
             // 
-            this.UpdateCancelButton.Location = new System.Drawing.Point(167, 95);
+            this.UpdateCancelButton.Location = new System.Drawing.Point(180, 5);
             this.UpdateCancelButton.Name = "UpdateCancelButton";
             this.UpdateCancelButton.Size = new System.Drawing.Size(75, 23);
             this.UpdateCancelButton.TabIndex = 3;
@@ -81,7 +89,7 @@ namespace tarkov_settings
             // CurrentVersionLabel
             // 
             this.CurrentVersionLabel.AutoSize = true;
-            this.CurrentVersionLabel.Location = new System.Drawing.Point(96, 45);
+            this.CurrentVersionLabel.Location = new System.Drawing.Point(133, 9);
             this.CurrentVersionLabel.Name = "CurrentVersionLabel";
             this.CurrentVersionLabel.Size = new System.Drawing.Size(56, 14);
             this.CurrentVersionLabel.TabIndex = 4;
@@ -90,7 +98,7 @@ namespace tarkov_settings
             // LatestVersionLabel
             // 
             this.LatestVersionLabel.AutoSize = true;
-            this.LatestVersionLabel.Location = new System.Drawing.Point(96, 65);
+            this.LatestVersionLabel.Location = new System.Drawing.Point(133, 29);
             this.LatestVersionLabel.Name = "LatestVersionLabel";
             this.LatestVersionLabel.Size = new System.Drawing.Size(56, 14);
             this.LatestVersionLabel.TabIndex = 5;
@@ -98,30 +106,73 @@ namespace tarkov_settings
             // 
             // UpdateNotifyLabel
             // 
-            this.UpdateNotifyLabel.AutoSize = true;
             this.UpdateNotifyLabel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.UpdateNotifyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateNotifyLabel.ForeColor = System.Drawing.SystemColors.Info;
-            this.UpdateNotifyLabel.Location = new System.Drawing.Point(51, 9);
+            this.UpdateNotifyLabel.Location = new System.Drawing.Point(0, 0);
             this.UpdateNotifyLabel.Name = "UpdateNotifyLabel";
-            this.UpdateNotifyLabel.Size = new System.Drawing.Size(147, 28);
+            this.UpdateNotifyLabel.Size = new System.Drawing.Size(257, 52);
             this.UpdateNotifyLabel.TabIndex = 6;
             this.UpdateNotifyLabel.Text = "Tarkov Settings\r\nUpdate is Available!";
             this.UpdateNotifyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(263, 155);
+            this.tableLayoutPanel1.TabIndex = 7;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.LatestVersionLabel);
+            this.panel1.Controls.Add(this.currentLabel);
+            this.panel1.Controls.Add(this.CurrentVersionLabel);
+            this.panel1.Controls.Add(this.latestLabel);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 61);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(257, 52);
+            this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.UpdateCancelButton);
+            this.panel2.Controls.Add(this.UpdateButton);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(3, 119);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(257, 33);
+            this.panel2.TabIndex = 1;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.UpdateNotifyLabel);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 3);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(257, 52);
+            this.panel3.TabIndex = 2;
             // 
             // UpdateNotifier
             // 
             this.AcceptButton = this.UpdateButton;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.UpdateButton;
-            this.ClientSize = new System.Drawing.Size(247, 125);
+            this.ClientSize = new System.Drawing.Size(263, 155);
             this.ControlBox = false;
-            this.Controls.Add(this.UpdateNotifyLabel);
-            this.Controls.Add(this.LatestVersionLabel);
-            this.Controls.Add(this.CurrentVersionLabel);
-            this.Controls.Add(this.UpdateCancelButton);
-            this.Controls.Add(this.UpdateButton);
-            this.Controls.Add(this.latestLabel);
-            this.Controls.Add(this.currentLabel);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -132,8 +183,12 @@ namespace tarkov_settings
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Update Available";
             this.TopMost = true;
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -146,5 +201,9 @@ namespace tarkov_settings
         private System.Windows.Forms.Label CurrentVersionLabel;
         private System.Windows.Forms.Label LatestVersionLabel;
         private System.Windows.Forms.Label UpdateNotifyLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
     }
 }
