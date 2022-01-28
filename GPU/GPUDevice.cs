@@ -19,11 +19,13 @@ namespace tarkov_settings.GPU
                 {
                     foreach (ManagementObject obj in searcher.Get())
                     {
-                        if (obj["Name"].ToString().Contains("NVIDIA"))
+                        var deviceName = obj["Name"].ToString();
+
+                        if (deviceName.Contains("NVIDIA"))
                         {
                             return new NVIDIA(GPUVendor.NVIDIA);
                         }
-                        else if (obj["Name"].ToString().Contains("AMD"))
+                        else if (deviceName.Contains("AMD") || deviceName.Contains("Radeon"))
                         {
                             return new AMD(GPUVendor.AMD);
                         }
