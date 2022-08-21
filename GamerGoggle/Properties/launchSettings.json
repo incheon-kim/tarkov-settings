@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GamerGoggle": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
