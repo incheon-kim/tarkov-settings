@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="TabTemplate" TargetType="{x:Type ListBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBox">
+                    <Border>
+                        <ScrollViewer>
+                            <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

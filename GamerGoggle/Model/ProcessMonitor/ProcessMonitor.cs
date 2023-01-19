@@ -19,10 +19,10 @@ namespace GamerGoggle.Model.ProcessMonitor
         {
             this.colorController = colorController;
             this.appSetting = appSetting;
-            ForegroundProcessChanged += ForegroundHandler;
+            ForegroundProcessChanged += ForegroundProcessLogger;
         }
 
-        private void ForegroundHandler(object? sender, WinEventArgs args)
+        private void ForegroundProcessLogger(object? sender, WinEventArgs args)
         {
             User32.GetWindowThreadProcessId(args.handle, out var processId);
             using var proc = Process.GetProcessById((int)processId);
@@ -35,10 +35,9 @@ namespace GamerGoggle.Model.ProcessMonitor
             }
             else
             {
-                Log.Logger.Verbose(procname);
                 // non-target
+                Log.Logger.Verbose(procname);
             }
-
         }
     }
 }

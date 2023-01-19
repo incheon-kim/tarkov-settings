@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GamerGoggle.Model.Setting
 {
-    class AppSetting : ISetting<AppSetting>
+    public class AppSetting : ISetting<AppSetting>
     {
         public double Brightness { get; set; } = 0.5;
         public double Contrast { get; set; } = 0.5;

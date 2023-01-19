@@ -20,13 +20,13 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
+    <PackageReference Include="System.Management" Version="7.0.0" />
     <PackageReference Include="Vanara.PInvoke.Gdi32" Version="3.4.6" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="View\" />
-    <Folder Include="ViewModel\" />
+    <Folder Include="Common\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

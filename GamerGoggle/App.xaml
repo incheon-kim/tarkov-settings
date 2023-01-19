@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:GamerGoggle"
              Exit="Application_Exit">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
