@@ -5,43 +5,43 @@
 
 ## [->**DOWNLOAD Latest**<-](https://github.com/incheon-kim/tarkov-settings/releases/latest)
 
-Automatically change color settings for [Escape from Tarkov](https://escapefromtarkov.com)
+Automatically change color settings for [Escape from Tarkov](https://escapefromtarkov.com).
 
-Change Digital Vibrance Control value from Nvidia Settings with [NvAPIWrapper](https://github.com/falahati/NvAPIWrapper) and Gamma value with some [Win32 API calls](https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdevicegammaramp)
+## How it works?
+- Changes Digital Vibrance value from Nvidia Settings using [NvAPIWrapper](https://github.com/falahati/NvAPIWrapper)
+- Changes Gamma using some [Win32 API calls](https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-setdevicegammaramp)
 
-It changes display color values when only Escape from Tarkov Window is focused so it could prevent from sudden flash from display.
+It only changes your display's colors when Escape from Tarkov's window is in focus.
+This leaves a smooth transition when minimizing/maximizing.
 
---- 
-Nvidia GPU **fully supported.** (Brightness/Contrast/Gamma/Saturation)
-
-AMD GPU **partially supported.** (Except Saturation)
-
-Intel/Etc is not supported yet.
-
-
-
----
+## Supported Graphic Cards
+- Nvidia GPU **fully supported.** (Brightness/Contrast/Gamma/Saturation)
+- AMD GPU **partially supported.** (Except Saturation)
+- **Intel/Etc is not supported yet.**
 
 ## What does it do?
-1. Change Brightness/Contrast/Gamma of display
-2. Change Digital Vibrance Control (Saturation)
-3. Change color settings only while EFT window is activated (It prevents **sudden flash during Alt-tabbing**)
+You can change any of the following color settings:
+1. Brightness
+2. Contrast
+3. Gamma
+4. Digital Vibrance Control (aka. Saturation)
+5. Only affects display while EFT window is focussed (It also prevents **sudden flash during Alt-tabbing**)
 
 ## How to Use
-1. Open application (SmartGuard might prevent open it because I didn't signed it)
-2. Set color setting
-
-*  *  * (If you double click Brightness/Contrast/Gamma/Digital Vibrance Text it will change to default value)
-
-3. Minimize it and play EFT
+1. Open application (SmartGuard might prevent opening as it's not signed)
+2. Set any color value
+2.1. Double-click any slider labels to reset their values.
+3. Minimize and play EFT
 4. Close application if you want to deactivate
 
+**Exit the app from your taskbar to create a `settings.json` file that will remember your settings**
+
 ## Warning
-1. It might blink couple times when you active EFT window but it works. Don't worry
-2. ## **I don't know BSG will ban for using this.**
-3. AMD only supports Brightness/Contrast/Gamma Control
-4. Intel Graphics is not supported
-5. ## Only works in **Borderless mode.**
+1. It might blink couple times when you active EFT window but it works. Don't worry.
+2. **Disclaimer: I don't know BSG will ban for using this.**
+3. AMD only supports Brightness/Contrast/Gamma Controls
+4. Intel Graphic Cards are not supported
+5. Only works in **Borderless mode.**
 6. Nvidia Optimus Environment (mostly laptops) is not tested.
 
 ## TODO / Feature
@@ -57,3 +57,5 @@ Intel/Etc is not supported yet.
 - [ ] Profiles
 - [ ] Hot Keys
 - [ ] EFT setting modify (Framelimit or Graphic Settings)
+
+Thanks for your support!
