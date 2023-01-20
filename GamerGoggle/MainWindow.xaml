@@ -1,0 +1,22 @@
+﻿<Window x:Class="GamerGoggle.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GamerGoggle"
+        mc:Ignorable="d"
+        Title="GamerGoggle" Height="450" Width="800" 
+        ResizeMode="NoResize" AllowsTransparency="True" UseLayoutRounding="True"
+        WindowStyle="None"
+        Background="Transparent"
+        >
+    <Border Padding="3" CornerRadius="8" Background="White">
+        <DockPanel LastChildFill="True">
+            <ListBox DockPanel.Dock="Top"
+                ItemsSource="{Binding Views}" SelectedItem="{Binding CurrentView}" Style="{DynamicResource TabTemplate}"/>
+            <Border DockPanel.Dock="Top" CornerRadius="8" BorderBrush="Black" BorderThickness="1">
+                <ContentPresenter ContentSource="{Binding CurrentView.Content}"/>
+            </Border>
+        </DockPanel>
+    </Border>
+</Window>
