@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
+using Microsoft.Management.Infrastructure;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace GamerGoggle.Model.GPU
         private static readonly Lazy<IGPU> _Instance =
             new(() =>
             {
+                using var temp = new CimInstance()
                 using var searcher = new ManagementObjectSearcher("select * from Win32_VideoController");
 
                 var queryResult = searcher.Get();
