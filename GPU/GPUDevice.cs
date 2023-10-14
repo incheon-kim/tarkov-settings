@@ -15,26 +15,34 @@ namespace tarkov_settings.GPU
         private static readonly Lazy<IGPU> instance =
             new Lazy<IGPU>(() =>
             {
+                var vendor = GPUVendor.ETC;
                 using (var searcher = new ManagementObjectSearcher("select * from Win32_VideoController"))
                 {
                     foreach (ManagementObject obj in searcher.Get())
                     {
                         var deviceName = obj["Name"].ToString();
 
-                        if (deviceName.Contains("NVIDIA"))
+                        if (deviceName.Contains("NVIDIA") || deviceName.Contains("Geforce"))
                         {
-                            return new NVIDIA(GPUVendor.NVIDIA);
+                            vendor = GPUVendor.NVIDIA;
                         }
                         else if (deviceName.Contains("AMD") || deviceName.Contains("Radeon"))
                         {
-                            return new AMD(GPUVendor.AMD);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
+                            // Prioritize NVidia graphics
+                            if (vendor != GPUVendor.NVIDIA)
+                                vendor = GPUVendor.AMD;
                         }
                     }
-                    throw new NotImplementedException();
+
+                    switch (vendor)
+                    {
+                        case GPUVendor.NVIDIA:
+                            return new NVIDIA(vendor);
+                        case GPUVendor.AMD:
+                            return new AMD(vendor);
+                        default:
+                            throw new NotImplementedException();
+                    }
                 }
             });
         public static IGPU Instance
