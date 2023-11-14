@@ -106,8 +106,8 @@ namespace tarkov_settings
                 this.ShowInTaskbar = false;
                 this.trayIcon.ShowBalloonTip(
                     2500,
-                    "Tarkov Settings Initailized!",
-                    "Check out tray to modify your color setting",
+                    "Tarkov Settings Initialized!",
+                    "Check out the systray to modify your color setting.",
                     ToolTipIcon.Info
                     );
             }
